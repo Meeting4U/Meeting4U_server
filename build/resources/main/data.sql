@@ -1,0 +1,1 @@
+insert into user(id, user_id, name, home_address) values (100, 'ryunha', 'kimryunha', 'my_address');
