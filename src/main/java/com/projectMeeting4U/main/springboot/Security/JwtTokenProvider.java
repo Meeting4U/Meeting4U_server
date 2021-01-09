@@ -1,15 +1,17 @@
 package com.projectMeeting4U.main.springboot.Security;
 
+import com.projectMeeting4U.main.springboot.User.service.CustomUserDetailService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,12 +23,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
-    @Value("JwtToken")
+    @Value("spring.jwt.secret")
     private String secretKey;
 
     private long tokenValidMillSecond = 1000L * 60 * 60; // 1Hour
 
-    private UserDetailsService userDetailsService;
+    private final CustomUserDetailService userDetailsService;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public JwtTokenProvider(CustomUserDetailService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @PostConstruct
     protected void init() { // Initialize
@@ -46,7 +54,10 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) { // Jwt token으로 인증 정보 조회
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
+        System.out.println("#####");
+        UserDetails userDetails =  userDetailsService.loadUserByUsername(this.getUserPk(token));
+//                userRepository.findByUserId(this.getUserPk(token));
+//                userDetailsService.loadUserByUsername(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -55,7 +66,7 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) { // Request에서 Header token Parsing
-        return req.getHeader("X-AUTH_TOKEN");
+        return req.getHeader("X-AUTH-TOKEN");
     }
 
     public boolean validAtToken(String jwtToken) { // Jwt token 유효성과 만료일자 확인
