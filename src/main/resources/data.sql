@@ -1,1 +1,1 @@
-insert into user(id, role, user_id, name, password, email, phone_number, home_address) values (400, null, 'ryunha2', 'kimryunha', 'kimrh0609!', 'ryunha@gmail.com2', '010-5027-84852', 'my_address');
+select * from user;
