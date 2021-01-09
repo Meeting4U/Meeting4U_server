@@ -1,13 +1,22 @@
 create sequence if not exists hibernate_sequence;
 
-create table if not exists user (
+create table if not exists user ( -- User Table
     id INT NOT NULL PRIMARY KEY,
+    role INT,
     user_id VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(100) NOT NULL,
     home_address VARCHAR(100),
     current_loc_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+create table if not exists user_roles (
+    user_id INT NOT NULL,
+    roles VARCHAR(100) NOT NULL
 );
 
 create table if not exists meeting (
