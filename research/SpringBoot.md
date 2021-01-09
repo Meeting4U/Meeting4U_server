@@ -10,7 +10,15 @@ jwt token 방식 사용 시 user role 테이블과 user 테이블의 관계를 �
 
 [![Picture](https://github.com/koogk7/LoginApiForJwtAndSecurity/blob/master/image-20190715235023105.png?raw=true)](https://github.com/koogk7/LoginApiForJwtAndSecurity/blob/master/image-20190715235023105.png?raw=true)
 
-* 
+* @Autowired
+필요한 의존 객체의 “타입"에 해당하는 빈을 찾아 주입하는 annotation
+    1. 생성자
+    2. setter
+    3. 필드
+위 세가지의 경우 Autowired annotation 사용 가능
+User - Service - CustomUserDetailService에서 annotation 추가 안해서 NullExceptionError 발생
+
+
 
   
 

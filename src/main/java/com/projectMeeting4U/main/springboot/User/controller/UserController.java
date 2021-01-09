@@ -2,7 +2,9 @@ package com.projectMeeting4U.main.springboot.User.controller;
 
 import com.projectMeeting4U.main.springboot.Location.controller.LocationController;
 import com.projectMeeting4U.main.springboot.Location.entity.CurrentLocation;
+import com.projectMeeting4U.main.springboot.Security.JwtTokenProvider;
 import com.projectMeeting4U.main.springboot.User.dto.LoginRequest;
+import com.projectMeeting4U.main.springboot.User.dto.LoginResponse;
 import com.projectMeeting4U.main.springboot.User.dto.NewUserRequest;
 import com.projectMeeting4U.main.springboot.User.entity.User;
 import com.projectMeeting4U.main.springboot.User.repository.UserRepository;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 @Api(tags = {"Users"})
@@ -30,8 +33,12 @@ public class UserController {
     private UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
-    
-    public UserController(PasswordEncoder passwordEncoder) {
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public UserController(PasswordEncoder passwordEncoder,
+                          JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -59,7 +66,7 @@ public class UserController {
                 newUserRequest.getPhoneNumber(),
                 newUserRequest.getHomeAddress(),
                 currentLocation,
-                newUserRequest.getRoles()
+                Collections.singletonList("ROLE_USER")
         );
 
         userRepository.save(user);
@@ -70,18 +77,25 @@ public class UserController {
     @ApiOperation(value = "Login", notes = "로그인")
     @PostMapping("/sign-in")
     @Transactional
-    public Boolean signIn(@ApiParam(value = "id", required = true) @Valid @RequestBody LoginRequest loginRequest) {
+    public LoginResponse signIn(@ApiParam(value = "id", required = true) @Valid @RequestBody LoginRequest loginRequest) {
         User user = userRepository.findByUserId(loginRequest.getUserId());
+        LoginResponse loginResponse = new LoginResponse();
+
         if(user == null) { // id가 존재하지 않는 경우
-            return false;
+            loginResponse.setLoginResult(false);
+            return loginResponse;
         }
         boolean check = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()); // 비밀번호 checking
 
-        if(!check) {
-            return false;
+        if(!check) { // password not matching
+            loginResponse.setLoginResult(false);
+        } else {
+            loginResponse.setLoginResult(true);
         }
 
-        return true;
+        System.out.println("Role = " + user.getRoles());
+        loginResponse.setJwtToken(jwtTokenProvider.createToken(user.getUserId(), user.getRoles()));
+        return loginResponse;
     }
 
 
