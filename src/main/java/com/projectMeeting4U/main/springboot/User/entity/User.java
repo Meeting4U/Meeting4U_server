@@ -1,17 +1,29 @@
 package com.projectMeeting4U.main.springboot.User.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.projectMeeting4U.main.springboot.Location.entity.CurrentLocation;
 import com.projectMeeting4U.main.springboot.Meeting.entity.MeetingUser;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Builder
 @Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -20,6 +32,13 @@ public class User {
     private String userId;
 
     private String name;
+
+    private String password;
+
+    private String email;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @Column(name = "home_address")
     private String homeAddress;
@@ -37,18 +56,30 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<MeetingUser> meetingUsers = new HashSet<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
+
     public User() {}
 
     public User(
             String userId,
             String name,
+            String password,
+            String email,
+            String phoneNumber,
             String homeAddress,
-            CurrentLocation currentLocation
+            CurrentLocation currentLocation,
+            List<String> roles
     ) {
         this.userId = userId;
         this.name = name;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
         this.homeAddress = homeAddress;
         this.currentLocation = currentLocation;
+        this.roles = roles;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -57,9 +88,17 @@ public class User {
 
     public String getName() { return name; }
 
+    public String getPassword() { return password; }
+
+    public String getEmail() { return email; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+
     public String getHomeAddress() { return homeAddress; }
 
     public CurrentLocation getCurrentLocation() { return currentLocation; }
+
+    public List<String> getRoles() { return roles; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 
@@ -67,4 +106,39 @@ public class User {
 
     @JsonIgnore
     public Set<MeetingUser> getMeetingUsers() { return meetingUsers; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public String getUsername() {
+        return this.userId;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
