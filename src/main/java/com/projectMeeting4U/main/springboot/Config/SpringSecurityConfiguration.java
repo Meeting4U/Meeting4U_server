@@ -71,7 +71,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests()
                     .antMatchers("/*/sign-up", "/*/sign-in").permitAll()
-                    .antMatchers(HttpMethod.GET, "/*/helloworld").permitAll()
+                    .antMatchers(HttpMethod.GET, "/*/hello").permitAll()
                     .anyRequest().hasRole("USER")
                 .and()
                     .addFilterBefore(new JwtAuthenticationFillter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
