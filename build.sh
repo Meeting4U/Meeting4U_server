@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd meeting4u/server/Meeting4U_server
+cd /meeting4u/server/Meeting4U_server
 
 # git 변경내용 fetch 및 merge
 git fetch
