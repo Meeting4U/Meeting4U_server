@@ -1,4 +1,4 @@
-create sequence if not exists hibernate_sequence;
+--create sequence if not exists hibernate_sequence;
 
 create table if not exists user ( -- User Table
     id INT NOT NULL PRIMARY KEY,
@@ -33,8 +33,8 @@ create table if not exists meeting_user (
     id INT NOT NULL PRIMARY KEY,
     meeting_id INT NOT NULL,
     user_id INT NOT NULL,
-    user_type VARCHAR NOT NULL,
-    location_sharing_state VARCHAR NOT NULL,
+    user_type VARCHAR(100) NOT NULL,
+    location_sharing_state VARCHAR(100) NOT NULL,
     depart_loc_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -67,6 +67,6 @@ create table if not exists destination_location (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-create table if not exists configuration(
-
-);
+--create table if not exists configuration(
+--
+--);
