@@ -26,5 +26,5 @@ kill $pid
 
 #서버 실행.
 cd build/libs
-java -jar -Dspring.profiles.active=dev Meeting4U_server-1.0-SNAPSHOT.jar
+java -jar -Dserver.port=12030 -Dspring.profiles.active=dev Meeting4U_server-1.0-SNAPSHOT.jar
 
