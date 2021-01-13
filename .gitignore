@@ -1,5 +1,5 @@
 # Gradle
-.gradle
+.gradle/
 /build/
 .gradletasknamecache
-/src/main/resources/local/application.yml
+src/**/*.application.yml
