@@ -18,7 +18,7 @@ spring :
     initialization-mode: always
     url: jdbc:mysql://localhost:3306/Meeting4u?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
-    password: meeting4u!
+    password: kimrh0609!
 
   jwt:
     secret: JwtToken
