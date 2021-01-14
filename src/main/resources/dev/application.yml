@@ -3,7 +3,7 @@ server :
   port : 12030
 
 spring :
-  profiles : server
+  profiles : dev
     active : local
     include: console-logging, file-logging
 
