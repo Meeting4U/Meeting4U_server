@@ -22,9 +22,9 @@ pid=`jps | grep Gradle | awk '{print $1}'`
 kill $pid
 
 # 프로젝트 rebuild
-./gradlew clean build
+./gradlew clean build -Pprofile=dev
 
 #서버 실행.
 cd build/libs
-java -jar -Dserver.port=12030 -Dspring.profiles.active=dev Meeting4U_server-1.0-SNAPSHOT.jar
+java -jar Meeting4U_server-1.0-SNAPSHOT.jar
 
