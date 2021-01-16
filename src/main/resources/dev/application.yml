@@ -1,14 +1,10 @@
 server :
-  port : 12031
+  address : localhost
+  port : 12040
 
 spring :
   profiles :
-  address : dev
-  port : 12030
-
-spring :
-  profiles : dev
-    active : dev
+    active : local
     include: console-logging, file-logging
 
   h2:
@@ -28,6 +24,7 @@ spring :
     secret: JwtToken
 
   jpa:
+
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate.ddl-auto: validate
     generate-ddl: true

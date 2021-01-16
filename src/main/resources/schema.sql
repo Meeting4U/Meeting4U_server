@@ -1,5 +1,3 @@
-create sequence if not exists hibernate_sequence;
-
 create table if not exists user ( -- User Table
     id INT NOT NULL PRIMARY KEY,
     role INT,
@@ -67,6 +65,4 @@ create table if not exists destination_location (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---create table if not exists configuration(
---
---);
+--create sequence if not exists hibernate_sequence;
