@@ -1,6 +1,6 @@
 server :
   address : localhost
-  port : 12040
+  port : 12050
 
 spring :
   profiles :
