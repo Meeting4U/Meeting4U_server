@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Table(name = "destination_location")
 public class DestinationLocation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String address;
