@@ -14,7 +14,7 @@ spring :
 
   datasource:
     drive-class-name: com.mysql.cj.jdbc.Driver
-    initialize: true,
+    initialize: true
     initialization-mode: always
     url: jdbc:mysql://localhost:3306/Meeting4u?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
