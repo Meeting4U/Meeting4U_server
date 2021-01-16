@@ -1,16 +1,13 @@
 server :
-<<<<<<< HEAD
   port : 12031
 
 spring :
   profiles :
-=======
-  address : localhost
+  address : dev
   port : 12030
 
 spring :
   profiles : dev
->>>>>>> origin/exp/ryunha
     active : dev
     include: console-logging, file-logging
 
