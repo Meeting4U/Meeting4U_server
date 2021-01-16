@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -7,3 +8,10 @@
 *.iws
 *.iml
 *.ipr
+=======
+# Gradle
+.gradle/
+/build/
+.gradletasknamecache
+build/**/*.application.yml
+>>>>>>> origin/exp/ryunha
