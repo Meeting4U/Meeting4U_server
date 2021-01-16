@@ -1,5 +1,9 @@
-# Gradle
 .gradle
 /build/
-.gradletasknamecache
-/src/main/resources/local/application.yml
+!gradle/wrapper/gradle-wrapper.jar
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

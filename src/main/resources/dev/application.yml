@@ -1,9 +1,9 @@
 server :
-  port : 12030
+  port : 12031
 
 spring :
   profiles :
-    active : local
+    active : dev
     include: console-logging, file-logging
 
   h2:
