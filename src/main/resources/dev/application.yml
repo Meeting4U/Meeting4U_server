@@ -26,8 +26,8 @@ spring :
   jpa:
 
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    hibernate.ddl-auto: update 
-    generate-ddl: true
+    hibernate.ddl-auto: validate #valdate : db와 entity가 제대로 매핑 돼 있는지 확인
+    generate-ddl: false #entity -> db에 적용
     database: mysql
     show_sql: true
     properties:
