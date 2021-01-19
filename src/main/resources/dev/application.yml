@@ -1,6 +1,6 @@
 server :
   address : localhost
-  port : 12040
+  port : 12030
 
 spring :
   profiles :
@@ -14,7 +14,7 @@ spring :
 
   datasource:
     drive-class-name: com.mysql.cj.jdbc.Driver
-    initialize: true,
+    initialize: true
     initialization-mode: always
     url: jdbc:mysql://localhost:3306/Meeting4u?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
@@ -26,8 +26,8 @@ spring :
   jpa:
 
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    hibernate.ddl-auto: validate
-    generate-ddl: true
+    generate-ddl: true #entity -> db에 적용
+    hibernate.ddl-auto: validate #valdate : db와 entity가 제대로 매핑 돼 있는지 확인
     database: mysql
     show_sql: true
     properties:

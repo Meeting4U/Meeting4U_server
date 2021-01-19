@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "meeting_user")
 public class MeetingUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne

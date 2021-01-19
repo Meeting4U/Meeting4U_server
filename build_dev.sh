@@ -22,9 +22,9 @@ pid=`jps | grep Gradle | awk '{print $1}'`
 kill $pid
 
 # 프로젝트 rebuild
-./gradlew clean build -Pprofile=dev
+sudo ./gradlew clean build -Pprofile=dev
 
 #서버 실행.
-cd build/libs
+cd /meeting4u/server/Meeting4U_server/build/libs
 java -jar Meeting4U_server-1.0-SNAPSHOT.jar
 
