@@ -70,7 +70,6 @@ public class User implements UserDetails {
             String email,
             String phoneNumber,
             String homeAddress,
-            CurrentLocation currentLocation,
             List<String> roles
     ) {
         this.userId = userId;
@@ -79,7 +78,6 @@ public class User implements UserDetails {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.homeAddress = homeAddress;
-        this.currentLocation = currentLocation;
         this.roles = roles;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -113,9 +111,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-//        return this.roles.stream()
-//                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-//                .collect(Collectors.toList());
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
