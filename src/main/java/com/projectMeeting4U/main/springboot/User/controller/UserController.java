@@ -2,10 +2,10 @@ package com.projectMeeting4U.main.springboot.User.controller;
 
 import com.projectMeeting4U.main.springboot.Location.controller.LocationController;
 import com.projectMeeting4U.main.springboot.Location.entity.CurrentLocation;
+import com.projectMeeting4U.main.springboot.Location.entity.CurrentLocationRedis;
+import com.projectMeeting4U.main.springboot.Location.repository.CurrentLocationRedisRepository;
 import com.projectMeeting4U.main.springboot.Security.JwtTokenProvider;
-import com.projectMeeting4U.main.springboot.User.dto.LoginRequest;
-import com.projectMeeting4U.main.springboot.User.dto.LoginResponse;
-import com.projectMeeting4U.main.springboot.User.dto.NewUserRequest;
+import com.projectMeeting4U.main.springboot.User.dto.*;
 import com.projectMeeting4U.main.springboot.User.entity.User;
 import com.projectMeeting4U.main.springboot.User.repository.UserRepository;
 import io.swagger.annotations.*;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CurrentLocationRedisRepository currentLocationRedisRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -55,9 +59,8 @@ public class UserController {
     @ApiOperation(value = "Create New User Obj", notes = "회원 가입")
     @PostMapping("/sign-up")
     @Transactional
-    public User singUp(@ApiParam(value = "회원 가입", required = true) @Valid @RequestBody NewUserRequest newUserRequest) { // Create New User Data
+    public NewUserResponse singUp(@ApiParam(value = "회원 가입", required = true) @Valid @RequestBody NewUserRequest newUserRequest) { // Create New User Data
 
-        CurrentLocation currentLocation = locationController.newCurrentLoacion();
         User user = new User(
                 newUserRequest.getUserId(),
                 newUserRequest.getName(),
@@ -65,13 +68,24 @@ public class UserController {
                 newUserRequest.getEmail(),
                 newUserRequest.getPhoneNumber(),
                 newUserRequest.getHomeAddress(),
-                currentLocation,
-                Collections.singletonList("ROLE_USER")
+                Collections.singletonList("ROLE_USER") // 권한 부여
         );
 
-        userRepository.save(user);
+        CurrentLocationRedis currentLocationRedis = new CurrentLocationRedis(
+                                                        newUserRequest.getUserId(),
+                                                        null,
+                                                        null );
 
-        return user;
+        try {
+            userRepository.save(user);
+            currentLocationRedisRepository.save(currentLocationRedis);
+            NewUserResponse newUserResponse = new NewUserResponse("true");
+            return newUserResponse;
+        } catch (Exception e){
+            NewUserResponse newUserResponse = new NewUserResponse("false");
+            return newUserResponse;
+        }
+
     }
 
     @ApiOperation(value = "Login", notes = "로그인")
@@ -82,15 +96,15 @@ public class UserController {
         LoginResponse loginResponse = new LoginResponse();
 
         if(user == null) { // id가 존재하지 않는 경우
-            loginResponse.setLoginResult(false);
+            loginResponse.setLoginResult("false");
             return loginResponse;
         }
         boolean check = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()); // 비밀번호 checking
 
         if(!check) { // password not matching
-            loginResponse.setLoginResult(false);
+            loginResponse.setLoginResult("false");
         } else {
-            loginResponse.setLoginResult(true);
+            loginResponse.setLoginResult("true");
         }
 
         System.out.println("Role = " + user.getRoles());
@@ -100,13 +114,42 @@ public class UserController {
 
 
     @ApiOperation(value = "Check ID exist already", notes = "아이디 중복 조회")
-    @GetMapping("/user/{id}")
-    public Boolean checkUserId(@PathVariable String id) { // Check ID exist already
+    @GetMapping("/sign-up/{id}")
+    public String checkUserId(@PathVariable String id) { // Check ID exist already
         if(userRepository.findByUserId(id) == null)
-            return true;
+            return "true";
 
-        return false;
+        return "false";
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "Get User Information", notes = "유저 정보 조회")
+    @GetMapping("/user/{id}")
+    @Transactional
+    public UserResponse getUser(@PathVariable String id) { // Get {id} User Information
+        User user = userRepository.findByUserId(id);
+        UserResponse userResponse = new UserResponse();
+
+        if (user == null) {
+            userResponse.setResult("false");
+        } else {
+            userResponse.setResult("true");
+            userResponse.setUserId(user.getUserId());
+            userResponse.setName(user.getName());
+            userResponse.setEmail(user.getEmail());
+            userResponse.setPhoneNumber(user.getPhoneNumber());
+            userResponse.setHomeAddress(user.getHomeAddress());
+            userResponse.setCurrentLocation(user.getCurrentLocation());
+            userResponse.setCreatedAt(user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            userResponse.setUpdatedAt(user.getUpdatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        }
+
+        return userResponse;
+
+    }
+
 
 
 }

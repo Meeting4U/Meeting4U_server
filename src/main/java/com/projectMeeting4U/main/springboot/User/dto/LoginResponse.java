@@ -4,15 +4,15 @@ import javax.validation.constraints.NotNull;
 
 public class LoginResponse {
     @NotNull
-    private Boolean loginResult;
+    private String loginResult;
 
     private String jwtToken;
 
-    public Boolean getLoginResult() { return loginResult; }
+    public String getLoginResult() { return loginResult; }
 
     public String getJwtToken() { return jwtToken; }
 
-    public void setLoginResult(Boolean loginResult) {
+    public void setLoginResult(String loginResult) {
         this.loginResult = loginResult;
     }
 

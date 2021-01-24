@@ -14,6 +14,16 @@ plugins {
     id 'java'
 }
 
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+dependencies {
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+}
+
 apply plugin : 'java'
 apply plugin : 'eclipse'
 apply plugin : 'org.springframework.boot'
@@ -40,6 +50,12 @@ dependencies {
     compile('io.springfox:springfox-swagger2:2.6.1')
     compile('io.springfox:springfox-swagger-ui:2.6.1')
     compile('mysql:mysql-connector-java')
+
+    // Redis
+    compile('org.springframework.boot:spring-boot-starter-data-redis')
+    compile('redis.clients:jedis:2.9.0')
+    compile('org.springframework.session:spring-session-data-redis')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile 'junit:junit:4.12'
 }
