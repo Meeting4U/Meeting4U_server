@@ -15,7 +15,7 @@ api test : curl -H "Content-Type: application/x-www-form-urlencoded"  -X GET htt
 ## DB Structure
 
 ------------
-[![Picture](https://github.com/Meeting4U/Meeting4U_server/blob/main/table_info.jpeg?raw=true)](https://github.com/Meeting4U/Meeting4U_server/blob/main/table_info.jpeg?raw=true)
+[![Picture](https://github.com/Meeting4U/Meeting4U_server/blob/develop/table_info.jpeg?raw=true)](https://github.com/Meeting4U/Meeting4U_server/blob/develop/table_info.jpeg?raw=true)
 
 -----------
 ## feature branch 생성 및 종료
@@ -36,3 +36,4 @@ $ git push origin develop
     이것은 ‘feature’ 브랜치에 존재하는 커밋 이력을 모두 합쳐서 하나의 새로운 커밋 객체를 만들어 ‘develop’ 브랜치로 병합(merge)하는 것이다.
 
 [출처](https://gmlwjd9405.github.io/2018/05/11/types-of-git-branch.html)
+
