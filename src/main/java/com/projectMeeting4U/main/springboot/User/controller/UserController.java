@@ -2,6 +2,8 @@ package com.projectMeeting4U.main.springboot.User.controller;
 
 import com.projectMeeting4U.main.springboot.Location.controller.LocationController;
 import com.projectMeeting4U.main.springboot.Location.entity.CurrentLocation;
+import com.projectMeeting4U.main.springboot.Location.entity.CurrentLocationRedis;
+import com.projectMeeting4U.main.springboot.Location.repository.CurrentLocationRedisRepository;
 import com.projectMeeting4U.main.springboot.Security.JwtTokenProvider;
 import com.projectMeeting4U.main.springboot.User.dto.LoginRequest;
 import com.projectMeeting4U.main.springboot.User.dto.LoginResponse;
@@ -32,6 +34,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CurrentLocationRedisRepository currentLocationRedisRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -57,7 +62,6 @@ public class UserController {
     @Transactional
     public User singUp(@ApiParam(value = "회원 가입", required = true) @Valid @RequestBody NewUserRequest newUserRequest) { // Create New User Data
 
-        CurrentLocation currentLocation = locationController.newCurrentLoacion();
         User user = new User(
                 newUserRequest.getUserId(),
                 newUserRequest.getName(),
@@ -65,11 +69,16 @@ public class UserController {
                 newUserRequest.getEmail(),
                 newUserRequest.getPhoneNumber(),
                 newUserRequest.getHomeAddress(),
-                currentLocation,
                 Collections.singletonList("ROLE_USER")
         );
 
+        CurrentLocationRedis currentLocationRedis = new CurrentLocationRedis(
+                                                        newUserRequest.getUserId(),
+                                                        null,
+                                                        null );
         userRepository.save(user);
+        currentLocationRedisRepository.save(currentLocationRedis);
+
 
         return user;
     }
