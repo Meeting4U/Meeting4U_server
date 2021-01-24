@@ -22,6 +22,7 @@ public class SwaggerConfiguration {
                 .useDefaultResponseMessages(false);
     }
 
+
     private ApiInfo swaggerInfo() {
         return new ApiInfoBuilder().title("Spring API Documentation")
                 .description("API")

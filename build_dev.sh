@@ -27,3 +27,7 @@ sudo ./gradlew clean build -Pprofile=dev
 #서버 실행.
 cd /meeting4u/server/Meeting4U_server/build/libs
 nohup java -jar Meeting4U_server-1.0-SNAPSHOT.jar &
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/develop
