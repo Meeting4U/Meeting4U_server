@@ -3,7 +3,7 @@
 cd /meeting4u/server/Meeting4U_server
 
 # git 변경내용 fetch 및 merge
-git fetch origin/develop
+git fetch origin develop
 
 h1=`git rev-parse HEAD`
 h2=`git rev-parse origin/develop`
