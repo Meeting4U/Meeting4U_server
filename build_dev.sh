@@ -6,7 +6,7 @@ cd /meeting4u/server/Meeting4U_server
 git fetch
 
 h1=`git rev-parse HEAD`
-h2=`git rev-parse origin/main`
+h2=`git rev-parse origin/develop`
 
 if [[ $h1 == $h2 ]]; then
     echo "Ok"
@@ -26,5 +26,5 @@ sudo ./gradlew clean build -Pprofile=dev
 
 #서버 실행.
 cd /meeting4u/server/Meeting4U_server/build/libs
-java -jar Meeting4U_server-1.0-SNAPSHOT.jar
+nohup java -jar Meeting4U_server-1.0-SNAPSHOT.jar &
 
