@@ -45,5 +45,15 @@ User - Service - CustomUserDetailService에서 annotation 추가 안해서 NullE
 ## Redis
 
 * In memory 기법
+
+
+
+----
+
+## 컨트롤러(Controller), 서비스(Service), DAO(Data Access Object)
+
+* Controller : 클라이언트에서 요청이 들어올 때, 해당 요청을 수행할 비즈니스 로직을 제어하는 객체
+* Service : 서비스 레이어(Service Layer)단에서 세분화된 비즈니스로직을 처리하는 객체(data 가공)
+* DAO (Data Access Object) : DB를 사용해 데이터를 조회하거나 조작하는 기능을 전담하도록 만든 객체
 * 
 
