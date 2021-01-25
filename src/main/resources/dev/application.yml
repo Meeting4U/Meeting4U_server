@@ -1,5 +1,5 @@
 server :
-  address : localhost
+  address : 0.0.0.0 
   port : 12030
 
 spring :
@@ -24,9 +24,8 @@ spring :
     secret: JwtToken
 
   jpa:
-
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    generate-ddl: true #entity -> db에 적용
+    generate-ddl: false #entity -> db에 적용
     hibernate.ddl-auto: validate #valdate : db와 entity가 제대로 매핑 돼 있는지 확인
     database: mysql
     show_sql: true
@@ -35,7 +34,15 @@ spring :
         format_sql: true
         enable_lazy_load_no_trans: true
 
-  logging:
-    level:
-      org.springframework: INFO
-      org.springframework.web: DEBUG
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter: DEBUG
+
+# Redis
+redis:
+  host: 127.0.0.1
+  port: 6379
