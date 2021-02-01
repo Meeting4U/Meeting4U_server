@@ -1,8 +1,11 @@
 package com.projectMeeting4U.main.springboot.User.service;
 
-import com.projectMeeting4U.main.springboot.User.dto.NewUserRequest;
-import com.projectMeeting4U.main.springboot.User.dto.NewUserResponse;
-import com.projectMeeting4U.main.springboot.User.dto.UserResponse;
+import com.projectMeeting4U.main.springboot.Meeting.entity.Meeting;
+import com.projectMeeting4U.main.springboot.Meeting.entity.MeetingUser;
+import com.projectMeeting4U.main.springboot.Meeting.repository.MeetingUserRepository;
+import com.projectMeeting4U.main.springboot.Meeting.service.MeetingService;
+import com.projectMeeting4U.main.springboot.Security.JwtTokenProvider;
+import com.projectMeeting4U.main.springboot.User.dto.*;
 import com.projectMeeting4U.main.springboot.User.entity.User;
 import com.projectMeeting4U.main.springboot.User.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,11 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserInterface {
@@ -19,10 +26,19 @@ public class UserService implements UserInterface {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private MeetingUserRepository meetingUserRepository;
+
+    @Autowired
+    MeetingService meetingService;
+
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(PasswordEncoder passwordEncoder) {
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public UserService(PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -68,6 +84,60 @@ public class UserService implements UserInterface {
         }
 
         return userResponse;
+    }
+
+    @Override
+    public MeetingUser getMeetingUser(User user) {
+        List<MeetingUser> MeetingUser =  meetingUserRepository.findByUser(user);
+        for(int i = 0; i < MeetingUser.size(); i++) {
+            MeetingUser t = MeetingUser.get(i);
+            System.out.println(t);
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public LoginResponse getMeetingInfo(User user, LoginRequest loginRequest) {
+        LoginResponse loginResponse = new LoginResponse();
+        List<MeetingInfo> meetingInfoList = new ArrayList<>();
+
+        if(user == null) { // id가 존재하지 않는 경우
+            loginResponse.setLoginResult("false");
+            loginResponse.setErrorMsg("존재하지 않는 id 입니다.");
+            return loginResponse;
+        }
+        boolean check = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()); // 비밀번호 checking
+
+        if(!check) { // password not matching
+            loginResponse.setErrorMsg("비밀번호가 일치하지 않습니다.");
+            loginResponse.setLoginResult("false");
+        } else {
+            loginResponse.setLoginResult("true");
+            getMeetingUser(user);
+        }
+        loginResponse.setJwtToken(jwtTokenProvider.createToken(user.getUserId(), user.getRoles()));
+
+        List<Meeting> meetings = meetingService.getMeetingList(user.getUserId()).getMeetingList();
+
+        meetings.forEach(meeting -> {
+            MeetingInfo meetingInfo = new MeetingInfo();
+            meetingInfo.setMeetingId(Integer.toString(meeting.getId())); // set meeting id
+            meetingInfo.setMeetingName(meeting.getName()); // set meeting name
+            meetingInfo.setAppointmentTime(meeting.getAppointmentTime()); // set meeting appointment time
+            meetingInfo.setDestinationLocation(meeting.getDestinationLocation()); // set meeting destination location
+            Optional<MeetingUser> meetingUserOptional = meetingUserRepository.findById(meeting.getId()); // get meeting user list
+            meetingInfo.setUserList(meetingUserOptional.stream().map(meetingUser -> meetingUser.getUser().getUsername()).collect(Collectors.toList())); // set meeting participant list
+            MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(user.getId(), meeting.getId());
+            meetingInfo.setLocationSharingState(meetingUser.getLocationSharingState()); // set user's location sharing state
+            meetingInfo.setMeetingUserType(meetingUser.getMeetingUserType()); // set meeting user type
+            meetingInfo.setState(meeting.getState()); // set meeting type
+            meetingInfoList.add(meetingInfo);
+        });
+
+        loginResponse.setMeetingInfoList(meetingInfoList);
+
+        return loginResponse;
     }
 
 }

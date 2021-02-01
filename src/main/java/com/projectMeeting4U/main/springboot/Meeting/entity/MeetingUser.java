@@ -60,6 +60,8 @@ public class MeetingUser {
 
     public int getId() { return id; }
 
+    public Meeting getMeeting() { return meeting; }
+
     public MeetingUserType getMeetingUserType() { return meetingUserType; }
 
     public LocationSharingState getLocationSharingState() { return locationSharingState; }

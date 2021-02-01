@@ -72,28 +72,8 @@ public class UserController {
     @Transactional
     public LoginResponse signIn(@ApiParam(value = "id", required = true) @Valid @RequestBody LoginRequest loginRequest) {
         User user = userRepository.findByUserId(loginRequest.getUserId());
-        LoginResponse loginResponse = new LoginResponse();
+        return userService.getMeetingInfo(user, loginRequest);
 
-        if(user == null) { // id가 존재하지 않는 경우
-            loginResponse.setLoginResult("false");
-            loginResponse.setErrorMsg("존재하지 않는 id 입니다.");
-            return loginResponse;
-        }
-        boolean check = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()); // 비밀번호 checking
-
-        if(!check) { // password not matching
-            loginResponse.setErrorMsg("비밀번호가 일치하지 않습니다.");
-            loginResponse.setLoginResult("false");
-        } else {
-            loginResponse.setLoginResult("true");
-        }
-
-        
-        System.out.println("Role = " + user.getRoles());
-        loginResponse.setJwtToken(jwtTokenProvider.createToken(user.getUserId(), user.getRoles()));
-
-
-        return loginResponse;
     }
 
 
