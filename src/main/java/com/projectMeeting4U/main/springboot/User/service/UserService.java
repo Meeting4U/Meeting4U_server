@@ -1,5 +1,7 @@
 package com.projectMeeting4U.main.springboot.User.service;
 
+import com.projectMeeting4U.main.springboot.Location.dto.NewCurrentLocationRedisRequest;
+import com.projectMeeting4U.main.springboot.Location.service.CurrentLocationRedisService;
 import com.projectMeeting4U.main.springboot.Meeting.entity.Meeting;
 import com.projectMeeting4U.main.springboot.Meeting.entity.MeetingUser;
 import com.projectMeeting4U.main.springboot.Meeting.repository.MeetingUserRepository;
@@ -30,7 +32,10 @@ public class UserService implements UserInterface {
     private MeetingUserRepository meetingUserRepository;
 
     @Autowired
-    MeetingService meetingService;
+    private MeetingService meetingService;
+
+    @Autowired
+    private CurrentLocationRedisService currentLocationRedisService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -44,6 +49,9 @@ public class UserService implements UserInterface {
     @Override
     @Transactional
     public NewUserResponse setUser(NewUserRequest newUserRequest) {
+        NewCurrentLocationRedisRequest newCurrentRedisLocationRequest = new NewCurrentLocationRedisRequest();
+        newCurrentRedisLocationRequest.setUserId(newUserRequest.getUserId());
+        currentLocationRedisService.setCurrentLocation(newCurrentRedisLocationRequest);
         User user = new User(
                 newUserRequest.getUserId(),
                 newUserRequest.getName(),
@@ -86,21 +94,11 @@ public class UserService implements UserInterface {
         return userResponse;
     }
 
-    @Override
-    public MeetingUser getMeetingUser(User user) {
-        List<MeetingUser> MeetingUser =  meetingUserRepository.findByUser(user);
-        for(int i = 0; i < MeetingUser.size(); i++) {
-            MeetingUser t = MeetingUser.get(i);
-            System.out.println(t);
-        }
-        return null;
-    }
 
     @Override
     @Transactional
     public LoginResponse getMeetingInfo(User user, LoginRequest loginRequest) {
         LoginResponse loginResponse = new LoginResponse();
-        List<MeetingInfo> meetingInfoList = new ArrayList<>();
 
         if(user == null) { // id가 존재하지 않는 경우
             loginResponse.setLoginResult("false");
@@ -114,13 +112,13 @@ public class UserService implements UserInterface {
             loginResponse.setLoginResult("false");
         } else {
             loginResponse.setLoginResult("true");
-            getMeetingUser(user);
         }
         loginResponse.setJwtToken(jwtTokenProvider.createToken(user.getUserId(), user.getRoles()));
 
         List<Meeting> meetings = meetingService.getMeetingList(user.getUserId()).getMeetingList();
+        List<MeetingInfo> meetingInfoList = new ArrayList<>();
 
-        meetings.forEach(meeting -> {
+        for (Meeting meeting : meetings) {
             MeetingInfo meetingInfo = new MeetingInfo();
             meetingInfo.setMeetingId(Integer.toString(meeting.getId())); // set meeting id
             meetingInfo.setMeetingName(meeting.getName()); // set meeting name
@@ -133,10 +131,9 @@ public class UserService implements UserInterface {
             meetingInfo.setMeetingUserType(meetingUser.getMeetingUserType()); // set meeting user type
             meetingInfo.setState(meeting.getState()); // set meeting type
             meetingInfoList.add(meetingInfo);
-        });
+        }
 
         loginResponse.setMeetingInfoList(meetingInfoList);
-
         return loginResponse;
     }
 

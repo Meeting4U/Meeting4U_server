@@ -9,15 +9,12 @@ import com.projectMeeting4U.main.springboot.User.entity.User;
 import com.projectMeeting4U.main.springboot.User.repository.UserRepository;
 import com.projectMeeting4U.main.springboot.User.service.UserService;
 import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Api(tags = {"Users"})
@@ -63,7 +60,6 @@ public class UserController {
     @PostMapping("/sign-up")
     @Transactional
     public NewUserResponse singUp(@ApiParam(value = "회원 가입", required = true) @Valid @RequestBody NewUserRequest newUserRequest) { // Create New User Data
-        currentLocationRedisService.setCurrentLocation(newUserRequest.getUserId(), null, null);
         return userService.setUser(newUserRequest);
     }
 

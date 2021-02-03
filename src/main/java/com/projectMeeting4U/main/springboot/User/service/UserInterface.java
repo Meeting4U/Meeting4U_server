@@ -7,7 +7,6 @@ import com.projectMeeting4U.main.springboot.User.entity.User;
 public interface UserInterface {
     public NewUserResponse setUser(NewUserRequest newUserRequest); // 유저 등록
     public UserResponse getUser(User user); // 유저 조회
-    public MeetingUser getMeetingUser(User user);
     public LoginResponse getMeetingInfo(User user, LoginRequest loginRequest);
 
 }
