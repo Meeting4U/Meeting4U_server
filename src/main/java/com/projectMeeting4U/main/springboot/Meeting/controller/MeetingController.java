@@ -6,8 +6,7 @@ import com.projectMeeting4U.main.springboot.Location.dto.NewDepartLocationReques
 import com.projectMeeting4U.main.springboot.Location.dto.NewDestLocationRequest;
 import com.projectMeeting4U.main.springboot.Location.entity.DepartLocation;
 import com.projectMeeting4U.main.springboot.Location.entity.DestinationLocation;
-import com.projectMeeting4U.main.springboot.Meeting.dto.MeetingResponse;
-import com.projectMeeting4U.main.springboot.Meeting.dto.NewMeetingRequest;
+import com.projectMeeting4U.main.springboot.Meeting.dto.*;
 import com.projectMeeting4U.main.springboot.Meeting.entity.*;
 import com.projectMeeting4U.main.springboot.Meeting.repository.MeetingRepository;
 import com.projectMeeting4U.main.springboot.Meeting.repository.MeetingUserRepository;
@@ -53,16 +52,16 @@ public class MeetingController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @GetMapping(path = "/meetings")
+    @GetMapping(path = "/meeting")
     public List<Meeting> getAllMeetings() { return meetingRepository.findAll(); }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @GetMapping(path = "/meetings/{userId}")
-    public MeetingResponse getMeetingByUserId(@PathVariable String userId) {
-        MeetingResponse meetingList = meetingService.getMeetingList(userId);
-        return meetingList;
+    @GetMapping(path = "/meeting/{userId}")
+    public MeetingResponse getMeetingByUserId(@PathVariable String userId) { // User Meeting 조회
+        MeetingResponse meetingResponse = meetingService.getMeetingList(userId);
+        return meetingResponse;
     }
 
     @ApiImplicitParams({
@@ -70,36 +69,19 @@ public class MeetingController {
     })
     @PostMapping(path = "/meeting")
     @Transactional
-    public Meeting newMeeting(@Valid @RequestBody NewMeetingRequest newMeetingRequest) {
-        NewDestLocationRequest newDestLocationRequest = new NewDestLocationRequest((newMeetingRequest.getDestinationAddress()));
-        NewDepartLocationRequest newDepartLocationRequest = new NewDepartLocationRequest();
-        DestinationLocation newDestination = locationController.newDestLocation(newDestLocationRequest);
-        DepartLocation newDepartLocation = locationController.newDepartLocation(newDepartLocationRequest);
-
-        Meeting meeting = new Meeting(
-                newMeetingRequest.getName(),
-                newDestination,
-                newMeetingRequest.getAppointmentTime(),
-                MeetingState.MEETING_READY
-        );
-
-        meetingRepository.save(meeting);
-
-        User hostUser = userRepository.findById(userRepository.findByUserId(newMeetingRequest.getUserId()).getId())
-                .orElseThrow(() -> new ResourceNotFoundException("user", "user", HttpStatus.NOT_FOUND));
-
-        MeetingUser meetingUser = new MeetingUser(
-                meeting,
-                hostUser,
-                newDepartLocation,
-                LocationSharingState.PRIVATE,
-                MeetingUserType.HOST
-        );
-        meetingUserRepository.save(meetingUser);
-
-        return meeting;
+    public NewMeetingResponse newMeeting(@Valid @RequestBody NewMeetingRequest newMeetingRequest) {
+        NewMeetingResponse newMeetingResponse = meetingService.createMeeting(newMeetingRequest);
+        return newMeetingResponse;
     }
 
-
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @PostMapping(path = "/meeting/join")
+    @Transactional
+    public JoinMeetingResponse joinMeeting(@Valid @RequestBody JoinMeetingRequest joinMeetingRequest) {
+        JoinMeetingResponse joinMeetingResponse = meetingService.joinMeeting(joinMeetingRequest);
+        return joinMeetingResponse;
+    }
 
 }
