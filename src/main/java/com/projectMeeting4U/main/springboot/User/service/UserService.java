@@ -125,7 +125,10 @@ public class UserService implements UserInterface {
             meetingInfo.setAppointmentTime(meeting.getAppointmentTime()); // set meeting appointment time
             meetingInfo.setDestinationLocation(meeting.getDestinationLocation()); // set meeting destination location
             Optional<MeetingUser> meetingUserOptional = meetingUserRepository.findById(meeting.getId()); // get meeting user list
-            meetingInfo.setUserList(meetingUserOptional.stream().map(meetingUser -> meetingUser.getUser().getUsername()).collect(Collectors.toList())); // set meeting participant list
+            List<MeetingUser> meetingUserList =  meetingUserOptional.isPresent()
+                    ? Collections.singletonList(meetingUserOptional.get())
+                    : Collections.emptyList();
+            meetingInfo.setUserList(meetingUserList.stream().map(meetingUser -> meetingUser.getUser().getUsername()).collect(Collectors.toList())); // set meeting participant list
             MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(user.getId(), meeting.getId());
             meetingInfo.setLocationSharingState(meetingUser.getLocationSharingState()); // set user's location sharing state
             meetingInfo.setMeetingUserType(meetingUser.getMeetingUserType()); // set meeting user type

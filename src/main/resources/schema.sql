@@ -12,7 +12,8 @@ create table if not exists user ( -- User Table
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-create table if not exists user_roles (
+create table if not exists user_roles(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     roles VARCHAR(100) NOT NULL
 );
