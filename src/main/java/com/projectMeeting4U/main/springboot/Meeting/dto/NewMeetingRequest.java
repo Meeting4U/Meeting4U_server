@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public class NewMeetingRequest {
     @NotNull
-    private int userId;
+    private String userId;
 
     @NotNull
     private String name;
@@ -19,7 +19,7 @@ public class NewMeetingRequest {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime appointmentTime;
 
-    public int getUserId() { return userId; }
+    public String getUserId() { return userId; }
 
     public String getName() { return name; }
 

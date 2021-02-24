@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface MeetingUserRepository extends JpaRepository<MeetingUser, Integer> {
     List<MeetingUser> findByUser(User user);
+    List<MeetingUser> findByMeetingId(Integer meetingId);
+    MeetingUser findByUserIdAndMeetingId(Integer userId, Integer meetingId);
 }

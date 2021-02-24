@@ -18,7 +18,42 @@ jwt token 방식 사용 시 user role 테이블과 user 테이블의 관계를 �
 위 세가지의 경우 Autowired annotation 사용 가능
 User - Service - CustomUserDetailService에서 annotation 추가 안해서 NullExceptionError 발생
 
+------------
+
+## JPA / Hibernate
+
+* DDL (Data Definition Language)
+
+  데이터베이스를 정의하는 언어로, 데이터를 생성(insert), 수정(update), 삭제(delete)하는 등의 데이터의 전체의 골격을 결정하는 언어
+
+* `spring.jpa.generate-ddl=true` 
+
+   true로 설정하면 해당 데이터를 근거로 서버 시작 시점에 DDL문을 생성하여 DB에 적용
+
+* `spring.jpa.hibernate.ddl-auto` option
+
+  1. none - 아무것도 실행하지 않음
+  2. create-drop -  SessionFactory가 시작될 때 drop및 생성을 실행하고, SessionFactory가 종료될 때 drop을 실행
+  3. create - SessionFactory가 시작될 때 데이터베이스 drop을 실행하고 생성된 DDL을 실행
+  4. update - 변경된 스키마를 적용
+  5. validate - 변경된 스키마가 있다면 변경점을 출력하고 애플리케이션을 종료 (시작 시 Entity 클래스와 DB 스키마 구조를 비교해서 같은지만 확인)
+
+[출처](https://velog.io/@owljoa/%EC%88%98%EC%A0%95%ED%95%84%EC%9A%94-JPA-Hibernate-%EC%B4%88%EA%B8%B0-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%83%9D%EC%84%B1-)
+
+----------
+
+## Redis
+
+* In memory 기법
 
 
-  
+
+----
+
+## 컨트롤러(Controller), 서비스(Service), DAO(Data Access Object)
+
+* Controller : 클라이언트에서 요청이 들어올 때, 해당 요청을 수행할 비즈니스 로직을 제어하는 객체
+* Service : 서비스 레이어(Service Layer)단에서 세분화된 비즈니스로직을 처리하는 객체(data 가공)
+* DAO (Data Access Object) : DB를 사용해 데이터를 조회하거나 조작하는 기능을 전담하도록 만든 객체
+* 
 

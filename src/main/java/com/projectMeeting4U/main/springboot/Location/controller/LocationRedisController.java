@@ -1,20 +1,20 @@
 package com.projectMeeting4U.main.springboot.Location.controller;
 
+import com.projectMeeting4U.main.springboot.Location.dto.CurrentLocationRedisResponse;
+import com.projectMeeting4U.main.springboot.Location.dto.NewCurrentLocationRedisRequest;
+import com.projectMeeting4U.main.springboot.Location.dto.NewCurrentLocationRedisResponse;
 import com.projectMeeting4U.main.springboot.Location.entity.CurrentLocationRedis;
 import com.projectMeeting4U.main.springboot.Location.repository.CurrentLocationRedisRepository;
-import com.projectMeeting4U.main.springboot.Location.repository.CurrentLocationRepository;
+import com.projectMeeting4U.main.springboot.Location.service.CurrentLocationRedisService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +25,9 @@ public class LocationRedisController {
     @Autowired
     CurrentLocationRedisRepository currentLocationRedisRepository;
 
+    @Autowired
+    private CurrentLocationRedisService currentLocationRedisService;
+
     public LocationRedisController(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
@@ -34,48 +37,32 @@ public class LocationRedisController {
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "JWT TOKEN", required = true, dataType = "String", paramType = "header")
     })
     @PostMapping("/location")
-    public ResponseEntity<?> addRedisKey(@ApiParam(value = "userId", defaultValue = "") @RequestParam String key,
-                                         @ApiParam(value = "longitude", defaultValue = "") @RequestParam String longitude,
-                                         @ApiParam(value = "latitude", defaultValue = "") @RequestParam String latitude) {
+    public NewCurrentLocationRedisResponse setCurrentLocation(@ApiParam(value = "newCurrentLocation", defaultValue = "") @Valid @RequestBody NewCurrentLocationRedisRequest newCurrentRedisLocationRequest) {
+        NewCurrentLocationRedisResponse newCurrentRedisLocationResponse = currentLocationRedisService.setCurrentLocation(newCurrentRedisLocationRequest);
 
-        HashOperations<String, String, String> hop = redisTemplate.opsForHash();
-        HashMap<String, String> locationMap = new HashMap<>();
-        locationMap.put("longitude", longitude);
-        locationMap.put("latitude", latitude);
-
-        hop.putAll(key, locationMap);
-
-        return null;
+        return newCurrentRedisLocationResponse;
     }
 
-    @ApiOperation(value = "redis value update")
+    @ApiOperation(value = "get all current location")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "JWT TOKEN", required = true, dataType = "String", paramType = "header")
     })
-    @PutMapping("/location/{key}")
-    public Optional<CurrentLocationRedis> updateLocationRedis(@ApiParam(value = "key", defaultValue = "") @PathVariable String key,
-                                                              @ApiParam(value = "longitude", defaultValue = "") @RequestParam String longitude,
-                                                              @ApiParam(value = "latitude", defaultValue = "") @RequestParam String latitude) {
-
-        CurrentLocationRedis currentLocationRedis = new CurrentLocationRedis(key, longitude, latitude);
-        currentLocationRedisRepository.save(currentLocationRedis);
-
-        Optional<CurrentLocationRedis> updateLocationRedis = currentLocationRedisRepository.findById(key);
-
-        return updateLocationRedis;
+    @GetMapping("/location/{meetingId}")
+    public CurrentLocationRedisResponse getCurrentLocationList(@ApiParam(value = "meetingId", defaultValue = "") @PathVariable Integer meetingId) {
+        CurrentLocationRedisResponse currentLocationRedisResponse = currentLocationRedisService.getCurrentLocationList(meetingId);
+        return currentLocationRedisResponse;
     }
 
-
-    @ApiOperation(value = "redis value 조회")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "JWT TOKEN", required = true, dataType = "String", paramType = "header")
-    })
-    @GetMapping("/location/{key}")
-    public Optional<CurrentLocationRedis> getRedisKey(@ApiParam(value = "key", defaultValue = "") @PathVariable String key) {
-
-        Optional<CurrentLocationRedis> currentLocationRedis = currentLocationRedisRepository.findById(key);
-
-        return currentLocationRedis;
-    }
+//    @ApiOperation(value = "redis value 조회")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "JWT TOKEN", required = true, dataType = "String", paramType = "header")
+//    })
+//    @GetMapping("/location/{key}")
+//    public Optional<CurrentLocationRedis> getCurrentLocation(@ApiParam(value = "key", defaultValue = "") @PathVariable String key) {
+//
+//        Optional<CurrentLocationRedis> currentLocationRedis = currentLocationRedisRepository.findById(key);
+//
+//        return currentLocationRedis;
+//    }
 
 }

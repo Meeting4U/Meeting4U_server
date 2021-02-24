@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /meeting4u/server/Meeting4U_server
+cd /meeting4u/Meeting4U_server
 
 # git 변경내용 fetch 및 merge
 git fetch origin develop
@@ -25,5 +25,5 @@ kill $pid
 sudo ./gradlew clean build -Pprofile=dev
 
 #서버 실행.
-cd /meeting4u/server/Meeting4U_server/build/libs
+cd /meeting4u/Meeting4U_server/build/libs
 nohup java -jar Meeting4U_server-1.0-SNAPSHOT.jar &

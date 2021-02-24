@@ -30,7 +30,7 @@ public class MeetingUser {
     @Enumerated(EnumType.STRING)
     private LocationSharingState locationSharingState;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "depart_loc_id")
     private DepartLocation departLocation;
 
@@ -59,6 +59,8 @@ public class MeetingUser {
     }
 
     public int getId() { return id; }
+
+    public Meeting getMeeting() { return meeting; }
 
     public MeetingUserType getMeetingUserType() { return meetingUserType; }
 

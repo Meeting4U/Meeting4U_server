@@ -1,5 +1,5 @@
 server :
-  address : localhost
+  address : 0.0.0.0 
   port : 12030
 
 spring :
@@ -18,7 +18,7 @@ spring :
     initialization-mode: always
     url: jdbc:mysql://localhost:3306/Meeting4u?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
-    password: kimrh0609!
+    password: meeting4u!
 
   jwt:
     secret: JwtToken
