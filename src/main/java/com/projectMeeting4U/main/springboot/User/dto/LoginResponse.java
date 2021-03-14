@@ -16,6 +16,8 @@ public class LoginResponse {
 
     private String userId;
 
+    private String name;
+
     private List<MeetingInfo> meetingInfoList;
 
     public String getLoginResult() { return loginResult; }
@@ -25,6 +27,8 @@ public class LoginResponse {
     public String getJwtToken() { return jwtToken; }
 
     public String getUserId() { return userId; }
+
+    public String getName() { return name; }
 
     public List<MeetingInfo> getMeetingInfoList() { return meetingInfoList; }
 
@@ -37,6 +41,8 @@ public class LoginResponse {
     }
 
     public void setUserId(String userId) { this.userId = userId; }
+
+    public void setName(String name) { this.name = name; }
 
     public void setMeetingInfoList(List<MeetingInfo> meetingInfoList) { this.meetingInfoList = meetingInfoList; }
 
