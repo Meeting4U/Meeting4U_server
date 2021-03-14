@@ -1,6 +1,7 @@
 package com.projectMeeting4U.main.springboot.Location.controller;
 
 import com.projectMeeting4U.main.springboot.Location.dto.CurrentLocationRedisResponse;
+import com.projectMeeting4U.main.springboot.Location.dto.GeocoderResponse;
 import com.projectMeeting4U.main.springboot.Location.dto.NewCurrentLocationRedisRequest;
 import com.projectMeeting4U.main.springboot.Location.dto.NewCurrentLocationRedisResponse;
 import com.projectMeeting4U.main.springboot.Location.entity.CurrentLocationRedis;
@@ -43,7 +44,7 @@ public class LocationRedisController {
         return newCurrentRedisLocationResponse;
     }
 
-    @ApiOperation(value = "get all current location")
+    @ApiOperation(value = "meetingId에 속하는 유저의 current location 정보")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "JWT TOKEN", required = true, dataType = "String", paramType = "header")
     })
@@ -52,6 +53,16 @@ public class LocationRedisController {
         CurrentLocationRedisResponse currentLocationRedisResponse = currentLocationRedisService.getCurrentLocationList(meetingId);
         return currentLocationRedisResponse;
     }
+
+    @ApiOperation(value = "geocoder: x, y 좌표 반환")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "JWT TOKEN", required = true, dataType = "String", paramType = "header")
+    })
+    @GetMapping("/address/{address}")
+    public GeocoderResponse getGeocoder(@ApiParam(value = "address", defaultValue = "") @PathVariable String address) {
+        return currentLocationRedisService.getLocationFromGeocoder(address);
+    }
+
 
 //    @ApiOperation(value = "redis value 조회")
 //    @ApiImplicitParams({
