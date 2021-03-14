@@ -115,6 +115,7 @@ public class UserService implements UserInterface {
         }
         loginResponse.setJwtToken(jwtTokenProvider.createToken(user.getUserId(), user.getRoles()));
         loginResponse.setUserId(user.getUserId());
+        loginResponse.setName(user.getName());
 
         List<Meeting> meetings = meetingService.getMeetingList(user.getUserId()).getMeetingList();
         List<MeetingInfo> meetingInfoList = new ArrayList<>();
