@@ -1,6 +1,10 @@
 package com.projectMeeting4U.main.springboot.Location.entity;
 
+import com.projectMeeting4U.main.springboot.Location.dto.GeocoderResponse;
+import com.projectMeeting4U.main.springboot.Location.service.CurrentLocationRedisService;
+
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 
 @Entity

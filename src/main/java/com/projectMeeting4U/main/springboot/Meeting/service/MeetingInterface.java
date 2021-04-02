@@ -11,4 +11,5 @@ public interface MeetingInterface {
     public MeetingResponse getMeetingList(String userId);
     public NewMeetingResponse createMeeting(NewMeetingRequest meetingRequest);
     public JoinMeetingResponse joinMeeting(JoinMeetingRequest joinMeetingRequest);
+    public UpdateMeetingResponse updateMeeting(UpdateMeetingRequset updateMeetingRequset);
 }

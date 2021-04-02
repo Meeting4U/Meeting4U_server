@@ -69,7 +69,7 @@ public class MeetingController {
     })
     @PostMapping(path = "/meeting")
     @Transactional
-    public NewMeetingResponse newMeeting(@Valid @RequestBody NewMeetingRequest newMeetingRequest) {
+    public NewMeetingResponse newMeeting(@Valid @RequestBody NewMeetingRequest newMeetingRequest) { // Meeting 생성
         NewMeetingResponse newMeetingResponse = meetingService.createMeeting(newMeetingRequest);
         return newMeetingResponse;
     }
@@ -79,9 +79,19 @@ public class MeetingController {
     })
     @PostMapping(path = "/meeting/join")
     @Transactional
-    public JoinMeetingResponse joinMeeting(@Valid @RequestBody JoinMeetingRequest joinMeetingRequest) {
+    public JoinMeetingResponse joinMeeting(@Valid @RequestBody JoinMeetingRequest joinMeetingRequest) { // Meeting 참가
         JoinMeetingResponse joinMeetingResponse = meetingService.joinMeeting(joinMeetingRequest);
         return joinMeetingResponse;
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @PutMapping(path = "/meeting")
+    @Transactional
+    public UpdateMeetingResponse joinMeeting(@Valid @RequestBody UpdateMeetingRequset updateMeetingRequset) { // Meeting 참가
+        return meetingService.updateMeeting(updateMeetingRequset);
+    }
+
 
 }

@@ -98,23 +98,20 @@ public class CurrentLocationRedisService implements CurrentLocationRedisInterfac
             RequestEntity<String> rq = new RequestEntity<>(headers, HttpMethod.GET, url);
             ResponseEntity<Map> re = restTemplate.exchange(rq, Map.class);
 
-
-
             ArrayList<Object> arrayList = new ArrayList();
             arrayList = (ArrayList) re.getBody().get("documents");
             LinkedHashMap linkedHashMap = (LinkedHashMap) arrayList.get(0);
             LinkedHashMap linkedHashMap1 = (LinkedHashMap) linkedHashMap.get("address");
 
             System.out.println("ASDASDAS" + linkedHashMap.get("address").getClass().getName());
-
-
-            geocoderResponse.setResult(linkedHashMap1.get("x").toString());
-
-
-
+            System.out.println("X = " + linkedHashMap1.get("x").toString());
+            System.out.println("Y = " + linkedHashMap1.get("y").toString());
+            geocoderResponse.setResult("true");
+            geocoderResponse.setLatitude(linkedHashMap1.get("x").toString());
+            geocoderResponse.setLongitude(linkedHashMap1.get("y").toString());
 
         } catch (Exception e) {
-            return null;
+            geocoderResponse.setResult("false");
         }
 
         return geocoderResponse;
