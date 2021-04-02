@@ -6,19 +6,19 @@ public class GeocoderResponse {
     @NotNull
     private String result;
 
-    private String x;
+    private String latitude;
 
-    private String y;
+    private String longitude;
 
     public String getResult() { return result; }
 
-    public String getX() { return x; }
+    public String getLatitude() { return latitude; }
 
-    public String getY() { return y; }
+    public String getLongitude() { return longitude; }
 
     public void setResult(String result) { this.result = result; }
 
-    public void setX(String X) { this.x = x; }
+    public void setLatitude(String latitude) { this.latitude = latitude; }
 
-    public void setY(String y) { this.y = y; }
+    public void setLongitude(String longitude) { this.longitude = longitude; }
 }

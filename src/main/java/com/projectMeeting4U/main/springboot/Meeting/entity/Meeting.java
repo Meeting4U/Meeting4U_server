@@ -71,4 +71,14 @@ public class Meeting {
 
     @JsonIgnore
     public Set<MeetingUser> getMeetingUsers() { return meetingUsers; }
+
+    public void changeMeeting(String name,
+                              DestinationLocation destinationLocation,
+                              LocalDateTime appointmentTime
+    ) {
+        this.name = name;
+        this.destinationLocation = destinationLocation;
+        this.appointmentTime = appointmentTime;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

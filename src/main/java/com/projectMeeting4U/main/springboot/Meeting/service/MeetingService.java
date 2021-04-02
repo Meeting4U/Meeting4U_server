@@ -6,6 +6,7 @@ import com.projectMeeting4U.main.springboot.Location.dto.NewDepartLocationReques
 import com.projectMeeting4U.main.springboot.Location.dto.NewDestLocationRequest;
 import com.projectMeeting4U.main.springboot.Location.entity.DepartLocation;
 import com.projectMeeting4U.main.springboot.Location.entity.DestinationLocation;
+import com.projectMeeting4U.main.springboot.Location.repository.DestLocationRepository;
 import com.projectMeeting4U.main.springboot.Meeting.dto.*;
 import com.projectMeeting4U.main.springboot.Meeting.entity.*;
 import com.projectMeeting4U.main.springboot.Meeting.repository.MeetingRepository;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,9 @@ public class MeetingService implements MeetingInterface {
 
     @Autowired
     private MeetingRepository meetingRepository;
+
+    @Autowired
+    private DestLocationRepository destLocationRepository;
 
     @Autowired
     private LocationController locationController;
@@ -63,8 +68,8 @@ public class MeetingService implements MeetingInterface {
 
         NewDestLocationRequest newDestLocationRequest = new NewDestLocationRequest((newMeetingRequest.getDestinationAddress()));
         NewDepartLocationRequest newDepartLocationRequest = new NewDepartLocationRequest();
-        DestinationLocation newDestination = locationController.newDestLocation(newDestLocationRequest);
-        DepartLocation newDepartLocation = locationController.newDepartLocation(newDepartLocationRequest);
+        DestinationLocation newDestination = locationController.newDestLocation(newDestLocationRequest); // save to DB
+        DepartLocation newDepartLocation = locationController.newDepartLocation(newDepartLocationRequest); // save to DB
 
         Meeting meeting = new Meeting(
                 newMeetingRequest.getName(),
@@ -124,5 +129,37 @@ public class MeetingService implements MeetingInterface {
         joinMeetingResponse.setUserList(userList);
 
         return joinMeetingResponse;
+    }
+
+    @Override
+    public UpdateMeetingResponse updateMeeting(UpdateMeetingRequset updateMeetingRequset) {
+        UpdateMeetingResponse updateMeetingResponse = new UpdateMeetingResponse();
+        Meeting meeting = meetingRepository.findById(Integer.valueOf(updateMeetingRequset.getMeetingId())).get();
+        String meetingName = meeting.getName();
+        String destinationLocationStr = meeting.getDestinationLocation().getAddress();
+        LocalDateTime appointmentTime = meeting.getAppointmentTime();
+
+        if(updateMeetingRequset.getAppointmentTime() != null)
+            appointmentTime = updateMeetingRequset.getAppointmentTime();
+
+        if(updateMeetingRequset.getDestinationLocation() != null)
+            destinationLocationStr = updateMeetingRequset.getDestinationLocation();
+
+        if(updateMeetingRequset.getMeetingName() != null)
+            meetingName = updateMeetingRequset.getMeetingName();
+
+        DestinationLocation destinationLocation = destLocationRepository.findById(Integer.valueOf(meeting.getDestinationLocation().getId())).get();
+
+        destinationLocation.changeDestination(destinationLocationStr);
+        destLocationRepository.save(destinationLocation);
+
+        meeting.changeMeeting(meetingName, destinationLocation, appointmentTime);
+        meetingRepository.save(meeting);
+
+        updateMeetingResponse.setResult("true");
+        updateMeetingResponse.setMeeting(meetingRepository.findById(Integer.valueOf(updateMeetingRequset.getMeetingId())).get());
+
+
+        return updateMeetingResponse;
     }
 }
