@@ -33,7 +33,9 @@ public class MeetingInfo {
 
     private List<String> userList = new ArrayList<>();
 
-    private DestinationLocation destinationLocation;
+    private String latitude;
+
+    private String longitude;
 
     public String getMeetingId() { return meetingId; }
 
@@ -49,7 +51,9 @@ public class MeetingInfo {
 
     public List<String> getUserList() { return userList; }
 
-    public DestinationLocation getDestinationLocation() { return destinationLocation; }
+    public String getLatitude() { return latitude; }
+
+    public String getLongitude() { return longitude; }
 
     public void setMeetingId(String meetingId) { this.meetingId = meetingId; }
 
@@ -65,5 +69,8 @@ public class MeetingInfo {
 
     public void setUserList(List<String> userList) { this.userList = userList; }
 
-    public void setDestinationLocation(DestinationLocation destinationLocation) { this.destinationLocation = destinationLocation; }
+    public void setLatitude(String latitude) { this.latitude = latitude; }
+
+    public void setLongitude(String longitude) { this.longitude = longitude; }
+
 }
