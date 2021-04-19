@@ -17,10 +17,8 @@ api test : curl -H "Content-Type: application/x-www-form-urlencoded"  -X GET htt
 ## feature branch 생성 및 종료
 <pre><code>
 $ git checkout -b feature/login develop
-
 /* 새로운 기능에 대한 작업 수행 */
 /* feature 브랜치에서 모든 작업이 끝나면 */
-
 $ git checkout develop
 $ git merge --no-ff feature/login
 $ git branch -d feature/login
